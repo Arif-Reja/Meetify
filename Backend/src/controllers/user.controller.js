@@ -1,8 +1,9 @@
 import httpStatus from "http-status";
-import { User } from "../models/user.model.js";
+import { User } from "../../models/user.model.js";
+import { Meeting } from "../../models/meeting.model.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { Meeting } from "../models/meeting.model.js";
+
 
 
 
