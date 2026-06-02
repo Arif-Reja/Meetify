@@ -1,0 +1,209 @@
+.meetVideoContainer{
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #111827,
+        #1e293b
+    );
+    overflow: hidden;
+}
+
+
+
+.meetUserVideo{
+    position: absolute;
+    bottom: 100px;
+    left: 20px;
+
+    height: 220px;
+    width: 320px;
+
+    border-radius: 20px;
+    object-fit: cover;
+
+    border: 3px solid white;
+
+    z-index: 10;
+
+    background: black;
+
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.4);
+}
+
+
+
+.conferenceView{
+    display: flex;
+    flex-wrap: wrap;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 20px;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+}
+
+.conferenceView video{
+    width: 420px;
+    max-width: 95vw;
+
+    height: 300px;
+
+    object-fit: cover;
+
+    border-radius: 20px;
+
+    background: black;
+
+    border: 3px solid rgba(255,255,255,0.15);
+
+    box-shadow: 0px 6px 25px rgba(0,0,0,0.35);
+
+    transition: 0.3s;
+}
+
+.conferenceView video:hover{
+    transform: scale(1.02);
+}
+
+
+
+.buttonContainers{
+    position: fixed;
+
+    bottom: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+    gap: 20px;
+
+    padding: 15px 25px;
+
+    border-radius: 50px;
+
+    background: rgba(0,0,0,0.35);
+
+    backdrop-filter: blur(10px);
+
+    z-index: 100;
+}
+
+.buttonContainers button{
+    background: rgba(255,255,255,0.12) !important;
+
+    color: white !important;
+
+    transition: 0.2s !important;
+}
+
+.buttonContainers button:hover{
+    background: rgba(255,255,255,0.22) !important;
+
+    transform: scale(1.1);
+}
+
+
+
+.chatRoom{
+    position: absolute;
+
+    right: 0;
+    top: 0;
+
+    width: 350px;
+    height: 100vh;
+
+    background: rgba(17,24,39,0.95);
+
+    backdrop-filter: blur(10px);
+
+    z-index: 200;
+
+    border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.chatContainer{
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    padding: 20px;
+
+    color: white;
+}
+
+.chatContainer h1{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.chattingDisplay{
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding-right: 10px;
+}
+
+.chattingDisplay::-webkit-scrollbar{
+    width: 6px;
+}
+
+.chattingDisplay::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,0.3);
+    border-radius: 20px;
+}
+
+.chattingArea{
+    display: flex;
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+
+
+@media screen and (max-width: 768px){
+
+    .meetUserVideo{
+        width: 140px;
+        height: 200px;
+
+        bottom: 90px;
+        left: 10px;
+    }
+
+    .conferenceView{
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .conferenceView video{
+        width: 100%;
+        height: 240px;
+    }
+
+    .buttonContainers{
+        gap: 10px;
+
+        padding: 12px 15px;
+
+        bottom: 10px;
+    }
+
+    .chatRoom{
+        width: 100%;
+    }
+}
