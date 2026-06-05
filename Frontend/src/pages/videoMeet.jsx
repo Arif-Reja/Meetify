@@ -268,6 +268,7 @@ export default function VideoMeetComponent() {
 
 
     let connectToSocketServer = () => {
+        console.log("CONNECTING SOCKET");
         socketRef.current = io.connect(server_url, { secure: false })
 
         socketRef.current.on('signal', gotMessageFromServer)
@@ -278,14 +279,27 @@ export default function VideoMeetComponent() {
 
             socketRef.current.on('chat-message', addMessage)
 
-            socketRef.current.on('user-left', (id) => {
-                setVideos((videos) => videos.filter((video) => video.socketId !== id))
-            })
+           socketRef.current.on('user-left', (id) => {
+
+             if (connections[id]) {
+        connections[id].close();
+        delete connections[id];
+             }
+
+    setVideos((videos) =>
+        videos.filter((video) => video.socketId !== id)
+    );
+});
 
             socketRef.current.on('user-joined', (id, clients) => {
                 clients.forEach((socketListId) => {
 
-                    connections[socketListId] = new RTCPeerConnection(peerConfigConnections)
+                    if (!connections[socketListId]) {
+                connections[socketListId] =
+                     new RTCPeerConnection(peerConfigConnections);
+             } else {
+             return;
+                    }
                     
                     connections[socketListId].onicecandidate = function (event) {
                         if (event.candidate != null) {
