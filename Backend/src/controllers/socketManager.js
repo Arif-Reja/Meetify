@@ -19,21 +19,21 @@ export const connectToSocket = (server) => {
 
         console.log("User Connected:", socket.id);
 
-      
+    
 
         socket.on("join-call", (path) => {
 
-         
+           
             if (connections[path] === undefined) {
                 connections[path] = [];
             }
 
             connections[path].push(socket.id);
 
-           
+            
             timeOnline[socket.id] = new Date();
 
-        
+         
             for (let a = 0; a < connections[path].length; a++) {
 
                 io.to(connections[path][a]).emit(
@@ -44,7 +44,6 @@ export const connectToSocket = (server) => {
 
             }
 
-          
             if (messages[path] !== undefined) {
 
                 for (let a = 0; a < messages[path].length; ++a) {
@@ -62,7 +61,7 @@ export const connectToSocket = (server) => {
 
         });
 
-  
+     
 
         socket.on("signal", (toId, message) => {
 
@@ -74,7 +73,7 @@ export const connectToSocket = (server) => {
 
         });
 
-   
+     
 
         socket.on("chat-message", (data, sender) => {
 
@@ -82,7 +81,7 @@ export const connectToSocket = (server) => {
                 Object.entries(connections).reduce(
                     ([room, isFound], [roomKey, roomValue]) => {
 
-                        
+                       
                         if (!isFound && roomValue.includes(socket.id)) {
                             return [roomKey, true];
                         }
@@ -95,7 +94,7 @@ export const connectToSocket = (server) => {
 
             if (found === true) {
 
-              
+                
                 if (messages[matchingRoom] === undefined) {
                     messages[matchingRoom] = [];
                 }

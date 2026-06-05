@@ -1,6 +1,6 @@
 import axios from "axios";
 import httpStatus from "http-status";
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import server from "../environment";
 
@@ -12,14 +12,13 @@ const client = axios.create({
 
 export const AuthProvider = ({ children }) => {
 
-    const [userData, setUserData] = useState(null);
+    const authContext = useContext(AuthContext);
+
+    const [userData, setUserData] = useState(authContext);
 
     const router = useNavigate();
 
-   
-
     const handleRegister = async (name, username, password) => {
-
         try {
 
             const request = await client.post("/register", {
@@ -28,37 +27,19 @@ export const AuthProvider = ({ children }) => {
                 password
             });
 
-            console.log(request.data);
+            console.log("REGISTER RESPONSE =", request.data);
 
             if (request.status === httpStatus.CREATED) {
-
-         
-                localStorage.setItem(
-                    "token",
-                    request.data.token
-                );
-
-               
-                setUserData(request.data.user);
-
-              
-                router("/home");
-
-                return request.data;
+                return request.data.message;
             }
 
         } catch (err) {
-
             console.log(err);
-
             throw err;
         }
     };
 
-
-
     const handleLogin = async (username, password) => {
-
         try {
 
             const request = await client.post("/login", {
@@ -66,61 +47,75 @@ export const AuthProvider = ({ children }) => {
                 password
             });
 
-            console.log(request.data);
+            console.log("LOGIN RESPONSE =", request.data);
 
             if (request.status === httpStatus.OK) {
 
-                
                 localStorage.setItem(
                     "token",
                     request.data.token
                 );
 
-               
+                console.log(
+                    "TOKEN SAVED =",
+                    localStorage.getItem("token")
+                );
+
                 setUserData(request.data.user);
 
-              
                 router("/home");
 
                 return request.data;
             }
 
         } catch (err) {
-
             console.log(err);
-
             throw err;
         }
     };
 
-
     const getHistoryOfUser = async () => {
-
         try {
+
+            const token = localStorage.getItem("token");
+
+            console.log("TOKEN =", token);
 
             const request = await client.get(
                 "/get_all_activity",
                 {
                     params: {
-                        token: localStorage.getItem("token")
+                        token
                     }
                 }
             );
 
-            return request.data;
+            console.log(
+                "HISTORY API RESPONSE =",
+                request.data
+            );
+
+            
+
+            if (request.data?.meetings) {
+                return request.data.meetings;
+            }
+
+           
+
+            if (Array.isArray(request.data)) {
+                return request.data;
+            }
+
+            return [];
 
         } catch (err) {
-
             console.log(err);
-
             throw err;
         }
     };
 
-
-
     const addToUserHistory = async (meetingCode) => {
-
         try {
 
             const request = await client.post(
@@ -131,12 +126,15 @@ export const AuthProvider = ({ children }) => {
                 }
             );
 
+            console.log(
+                "ADD HISTORY RESPONSE =",
+                request.data
+            );
+
             return request.data;
 
         } catch (err) {
-
             console.log(err);
-
             throw err;
         }
     };

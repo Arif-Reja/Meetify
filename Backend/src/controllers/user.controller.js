@@ -1,18 +1,15 @@
 import httpStatus from "http-status";
 import { User } from "../../models/users.model.js";
-import { Meeting } from "../../models/meeting.model.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-
-
-
+import { Meeting } from "../../models/meeting.model.js";
 
 const login = async (req, res) => {
     try {
 
         const { username, password } = req.body;
 
-    
+      
         if (!username || !password) {
             return res.status(httpStatus.BAD_REQUEST).json({
                 success: false,
@@ -20,7 +17,7 @@ const login = async (req, res) => {
             });
         }
 
-       
+        
         const user = await User.findOne({ username });
 
         if (!user) {
@@ -30,7 +27,7 @@ const login = async (req, res) => {
             });
         }
 
-   
+        
         const isPasswordCorrect = await bcrypt.compare(
             password,
             user.password
@@ -43,14 +40,18 @@ const login = async (req, res) => {
             });
         }
 
-        
+      
         const token = crypto.randomBytes(32).toString("hex");
 
-        user.token = token;
+       user.token = token;
+
+        console.log("Before Save =", user);
 
         await user.save();
 
-     
+        console.log("After Save =", user);
+
+        
         return res.status(httpStatus.OK).json({
             success: true,
             message: "Login successful",
@@ -84,7 +85,7 @@ const register = async (req, res) => {
 
         const { name, username, password } = req.body;
 
-      
+       
         if (!name || !username || !password) {
             return res.status(httpStatus.BAD_REQUEST).json({
                 success: false,
@@ -92,7 +93,7 @@ const register = async (req, res) => {
             });
         }
 
-      
+       
         const existingUser = await User.findOne({ username });
 
         if (existingUser) {
@@ -134,7 +135,6 @@ const register = async (req, res) => {
 
 
 const getUserHistory = async (req, res) => {
-
     try {
 
         const { token } = req.query;
@@ -146,7 +146,6 @@ const getUserHistory = async (req, res) => {
             });
         }
 
-     
         const user = await User.findOne({ token });
 
         if (!user) {
@@ -156,15 +155,17 @@ const getUserHistory = async (req, res) => {
             });
         }
 
-   
+        console.log("USER =", user);
+
         const meetings = await Meeting.find({
             user_id: user.username
-        });
+       });
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            meetings
-        });
+
+        console.log("MEETINGS COUNT =", meetings.length);
+        console.log("MEETINGS =", meetings);
+
+        return res.status(httpStatus.OK).json(meetings);
 
     } catch (e) {
 
@@ -174,18 +175,17 @@ const getUserHistory = async (req, res) => {
             success: false,
             message: "Something went wrong"
         });
-
     }
 };
-
-
-
 const addToHistory = async (req, res) => {
-
     try {
+
 
         const { token, meeting_code } = req.body;
 
+        console.log("TOKEN =", token);
+        console.log("MEETING CODE =", meeting_code);
+        console.log("USER =", user);
         if (!token || !meeting_code) {
             return res.status(httpStatus.BAD_REQUEST).json({
                 success: false,
@@ -193,8 +193,9 @@ const addToHistory = async (req, res) => {
             });
         }
 
-       
         const user = await User.findOne({ token });
+
+        console.log("USER FOUND =", user);
 
         if (!user) {
             return res.status(httpStatus.UNAUTHORIZED).json({
@@ -203,12 +204,10 @@ const addToHistory = async (req, res) => {
             });
         }
 
-        
         const newMeeting = new Meeting({
             user_id: user.username,
             meetingCode: meeting_code
         });
-
         await newMeeting.save();
 
         return res.status(httpStatus.CREATED).json({
@@ -218,15 +217,15 @@ const addToHistory = async (req, res) => {
 
     } catch (e) {
 
-        console.log(e);
+        console.log("ERROR =", e);
 
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: "Something went wrong"
         });
-
     }
 };
+
 
 export {
     login,

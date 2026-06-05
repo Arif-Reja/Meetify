@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
 import { Button } from '@mui/material';
@@ -12,7 +12,7 @@ import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
 import ChatIcon from '@mui/icons-material/Chat'
 import server from '../environment';
-
+import { AuthContext } from "../contexts/authContext";
 const server_url = server;
 
 var connections = {};
@@ -57,7 +57,7 @@ export default function VideoMeetComponent() {
     const videoRef = useRef([])
 
     let [videos, setVideos] = useState([])
-
+    
 
 
     useEffect(() => {
@@ -432,12 +432,31 @@ export default function VideoMeetComponent() {
         // this.setState({ message: "", sender: username })
     }
 
-    
-    let connect = () => {
-        setAskForUsername(false);
-        getMedia();
+
+   let connect = async () => {
+
+    try {
+
+        const meetingCode =
+            window.location.pathname.split("/").pop();
+
+        console.log("MEETING CODE =", meetingCode);
+
+        await addToUserHistory(meetingCode);
+
+        console.log("HISTORY SAVED");
+
+    } catch (e) {
+
+        console.log("SAVE ERROR =", e);
+
     }
 
+    setAskForUsername(false);
+
+    getMedia();
+}
+    const { addToUserHistory } = useContext(AuthContext);
 
     return (
         <div>

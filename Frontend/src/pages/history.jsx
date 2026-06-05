@@ -26,7 +26,7 @@ export default function History() {
                 const history = await getHistoryOfUser();
                 setMeetings(history);
             } catch {
-                // IMPLEMENT SNACKBAR
+               
             }
         }
 
@@ -43,46 +43,161 @@ export default function History() {
         return `${day}/${month}/${year}`
 
     }
+   return (
+    <div
+        style={{
+            minHeight: "100vh",
+            background: "linear-gradient(135deg, #0f172a, #1e293b)",
+            padding: "30px",
+            color: "white"
+        }}
+    >
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "30px"
+            }}
+        >
+            <h1
+                style={{
+                    margin: 0,
+                    fontSize: "2.5rem",
+                    fontWeight: "bold"
+                }}
+            >
+                📜 Meeting History
+            </h1>
 
-    return (
-        <div>
-
-            <IconButton onClick={() => {
-                routeTo("/home")
-            }}>
+            <IconButton
+                onClick={() => routeTo("/home")}
+                sx={{
+                    backgroundColor: "#2563eb",
+                    color: "white",
+                    "&:hover": {
+                        backgroundColor: "#1d4ed8"
+                    }
+                }}
+            >
                 <HomeIcon />
-            </IconButton >
-            {
-                (meetings.length !== 0) ? meetings.map((e, i) => {
-                    return (
-
-                        <>
-
-
-                            <Card key={i} variant="outlined">
-
-
-                                <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        Code: {e.meetingCode}
-                                    </Typography>
-
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        Date: {formatDate(e.date)}
-                                    </Typography>
-
-                                </CardContent>
-
-
-                            </Card>
-
-
-                        </>
-                    )
-                }) : <></>
-
-            }
-
+            </IconButton>
         </div>
-    )
+
+        {!Array.isArray(meetings) || meetings.length === 0 ? (
+            <div
+                style={{
+                    minHeight: "70vh",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center"
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: "80px",
+                        marginBottom: "20px"
+                    }}
+                >
+                    📜
+                </div>
+
+                <h2
+                    style={{
+                        color: "white",
+                        fontSize: "2rem",
+                        marginBottom: "10px"
+                    }}
+                >
+                    No Meeting History Found
+                </h2>
+
+                <p
+                    style={{
+                        color: "#cbd5e1",
+                        fontSize: "1.1rem"
+                    }}
+                >
+                    Join a meeting to see your history here.
+                </p>
+
+                <button
+                    onClick={() => routeTo("/home")}
+                    style={{
+                        marginTop: "25px",
+                        padding: "12px 25px",
+                        border: "none",
+                        borderRadius: "10px",
+                        background: "#2563eb",
+                        color: "white",
+                        fontSize: "16px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Go To Home
+                </button>
+            </div>
+        ) : (
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                        "repeat(auto-fit, minmax(320px, 1fr))",
+                    gap: "25px",
+                    padding: "20px"
+                }}
+            >
+                {meetings.map((e, i) => (
+                    <Card
+                        key={e._id || i}
+                        sx={{
+                            borderRadius: "18px",
+                            background: "#ffffff",
+                            boxShadow:
+                                "0 8px 20px rgba(0,0,0,0.15)",
+                            transition: "0.3s",
+                            "&:hover": {
+                                transform: "translateY(-6px)"
+                            }
+                        }}
+                    >
+                        <CardContent>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: "bold",
+                                    color: "#2563eb"
+                                }}
+                            >
+                                Meeting #{i + 1}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    mt: 2,
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <strong>Code:</strong>{" "}
+                                {e.meetingCode}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    mt: 1,
+                                    color: "#64748b"
+                                }}
+                            >
+                                <strong>Date:</strong>{" "}
+                                {formatDate(e.date)}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        )}
+    </div>
+);
 }
