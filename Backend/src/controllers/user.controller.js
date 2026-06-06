@@ -185,7 +185,6 @@ const addToHistory = async (req, res) => {
 
         console.log("TOKEN =", token);
         console.log("MEETING CODE =", meeting_code);
-        console.log("USER =", user);
         if (!token || !meeting_code) {
             return res.status(httpStatus.BAD_REQUEST).json({
                 success: false,
